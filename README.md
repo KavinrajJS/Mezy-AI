@@ -1,150 +1,161 @@
 # Mezy — AI-Powered Customer Review Intelligence
 
-> **Tagline:** Understand Your Customers. Improve Your Business.
+**Understand Your Customers. Improve Your Business.**
 
-Mezy is a portfolio-grade AI application that helps restaurant and café owners turn raw customer reviews into clear, actionable business insights — without reading hundreds of reviews manually.
-
----
+Mezy helps restaurant and cafe owners turn customer reviews into meaningful business insights. It analyses customer feedback to highlight sentiment, recurring topics, and opportunities to improve the customer experience.
 
 ## Features
 
-- **Upload reviews** via CSV or paste directly.
-- **Gemini-powered analysis** — sentiment, topics, and aspect-level insights.
-- **Interactive dashboard** — charts, filters, and evidence-backed findings.
-- **Topic Explorer** — drill down into Food Quality, Delivery, Staff, and more.
-- **Action Tracker** — save improvement actions with priority and status (SQLite).
-- **Multilingual support** — English, Tamil, and Tanglish input; output in any of the three.
-- **Export** — PDF business report, editable Word document, or CSV.
+- **Review Upload:** Upload reviews using a CSV file or paste customer feedback directly into the application.
+- **AI-Powered Analysis:** Use the Gemini API to analyse customer sentiment, identify recurring topics, and generate insights.
+- **Overview Dashboard:** Explore review statistics, trends, and visual summaries through interactive charts.
+- **Review Analysis:** Examine individual reviews and understand customer feedback in greater detail.
+- **Action Tracker:** Record improvement actions, set priorities, and track progress using SQLite.
+- **Report Export:** Generate PDF business reports, editable Word documents, and CSV files.
+- **Report Language Options:** Select from the available language options when generating reports.
 
----
+## Technology Stack
 
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| UI | Streamlit |
-| AI | Gemini API (`google-genai`) |
-| Data | Pandas |
-| Charts | Plotly |
-| Storage | SQLite (`sqlite3`) |
-| PDF | ReportLab |
-| Word | python-docx |
-| Config | python-dotenv |
-
----
+| Component | Technology |
+|---|---|
+| User Interface | Streamlit |
+| AI Analysis | Gemini API (`google-genai`) |
+| Data Processing | Pandas |
+| Data Visualisation | Plotly |
+| Database | SQLite (`sqlite3`) |
+| PDF Generation | ReportLab |
+| Word Documents | `python-docx` |
+| Environment Configuration | `python-dotenv` |
+| Programming Language | Python |
 
 ## Project Structure
 
-```
+```text
 Mezy-AI/
-├── app.py                  # Entry point
+├── app.py
 ├── requirements.txt
-├── .env.example            # Copy to .env and add your API key
-├── config/settings.py      # All constants and paths
-├── src/                    # Business logic
-│   ├── data_cleaning.py
-│   ├── gemini_service.py
-│   ├── review_analysis.py
-│   ├── insights.py
-│   ├── database.py
-│   ├── report_generator.py
-│   └── translations.py
-├── components/             # Streamlit UI components
-│   ├── sidebar.py
-│   ├── upload.py
-│   ├── dashboard.py
-│   ├── review_table.py
-│   ├── topic_explorer.py
+├── .env.example
+├── .gitignore
+├── README.md
+├── .streamlit/
+│   └── config.toml
+├── assets/
+│   ├── styles.css
+│   └── application images and logos
+├── components/
+│   ├── __init__.py
 │   ├── action_tracker.py
-│   └── loading_animation.py
-├── assets/                 # CSS and images
-├── data/sample_reviews.csv # 30 fictional reviews for testing
-└── tests/                  # Automated tests
+│   ├── dashboard.py
+│   ├── loading_animation.py
+│   ├── review_table.py
+│   ├── sidebar.py
+│   ├── topic_explorer.py
+│   └── upload.py
+├── config/
+│   ├── __init__.py
+│   └── settings.py
+├── data/
+│   ├── README.md
+│   └── sample_reviews.csv
+├── src/
+│   ├── __init__.py
+│   ├── analytics.py
+│   ├── data_cleaning.py
+│   ├── database.py
+│   ├── gemini_service.py
+│   ├── report_generator.py
+│   ├── review_analysis.py
+│   └── translations.py
+└── tests/
+    ├── test_action_tracker_ui.py
+    ├── test_analytics.py
+    ├── test_data_cleaning.py
+    ├── test_database.py
+    ├── test_insights.py
+    ├── test_multilingual.py
+    ├── test_report_generator.py
+    ├── test_review_analysis.py
+    ├── test_ui_analysis_state.py
+    └── test_variations_runner.py
 ```
 
----
+## Getting Started
 
-## Setup
+### Prerequisites
 
-### 1. Clone the repository
+- Python 3.10 or a compatible version supported by the dependencies
+- Git
+- A Gemini API key
+
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/Mezy-AI.git
+git clone https://github.com/KavinrajJS/Mezy-AI.git
 cd Mezy-AI
 ```
 
-### 2. Create and activate the virtual environment
+### 2. Create a Virtual Environment
+
+**Windows (PowerShell):**
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+**macOS / Linux:**
 
 ```bash
-python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
-
-# macOS / Linux
+python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+### 3. Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-### 4. Configure the API key
+### 4. Configure the Gemini API Key
+
+Create a local `.env` file from the provided `.env.example` file.
+
+**Windows (PowerShell):**
+
+```powershell
+Copy-Item .env.example .env
+```
+
+**macOS / Linux:**
 
 ```bash
-copy .env.example .env   # Windows
-# OR
-cp .env.example .env     # macOS / Linux
+cp .env.example .env
 ```
 
-Open `.env` and replace `your_actual_api_key_here` with your Gemini API key.
+Open `.env` and add your Gemini API key:
 
-> **Never commit your `.env` file.** It is excluded by `.gitignore`.
+```env
+GEMINI_API_KEY=your_actual_api_key_here
+```
 
-### 5. Run the application
+### 5. Run the Application
 
 ```bash
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
-The application opens at `http://localhost:8501`.
-
----
+Once the application starts, open the local URL displayed in your terminal. The default address is usually http://localhost:8501.
 
 ## Sample Data
 
-A fictional 30-review dataset is provided in `data/sample_reviews.csv`.  
-It includes English, Tamil, and Tanglish reviews with varied sentiments.
+Mezy includes `data/sample_reviews.csv`, which contains sample customer reviews in English.
 
-Click **Use Sample Data** on the home screen to load it without uploading a file.
+You can use this dataset to explore the application's dashboard and review analysis features without preparing your own CSV file.
 
----
+## Notes
 
-## Limitations
+- AI-generated insights are intended to help users understand customer feedback and identify potential areas for improvement.
+- Analysis results may vary depending on the content and context of the reviews.
+- Gemini API usage is subject to the applicable service quotas and rate limits.
+- PDF and Word report formatting may vary depending on font availability and document settings.
 
-- Tanglish interpretation accuracy depends on context; some reviews may be classified as Uncertain.
-- The Gemini free tier has usage limits; large datasets may be processed in batches.
-- Tamil PDF rendering requires a compatible Unicode font (configured in Milestone 6).
-- This is a college portfolio project, not a production system.
-
----
-
-## Development Milestones
-
-| Milestone | Status | Description |
-|-----------|--------|-------------|
-| 1 | ✅ Complete | Foundation, folder structure, UI shell |
-| 2 | 🔜 Next | CSV upload, validation, data cleaning |
-| 3 | 🔜 | Gemini integration, structured analysis |
-| 4 | 🔜 | Analytics dashboard with charts |
-| 5 | 🔜 | Loading animation, multilingual output |
-| 6 | 🔜 | Action tracker, SQLite, exports |
-| 7 | 🔜 | Testing, polish, portfolio preparation |
-
----
-
-## License
-
-This project is for educational and portfolio purposes.
