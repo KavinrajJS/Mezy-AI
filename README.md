@@ -144,7 +144,7 @@ GEMINI_API_KEY=your_actual_api_key_here
 python -m streamlit run app.py
 ```
 
-Once the application starts, open the local URL displayed in your terminal. The default address is usually http://localhost:8501.
+Once the application starts, open the local URL displayed in your terminal.
 
 ## Sample Data
 
