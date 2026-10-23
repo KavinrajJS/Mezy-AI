@@ -1,0 +1,775 @@
+/*
+ * assets/styles.css
+ * -----------------
+ * Mezy — Minimal AI Workspace & Design System
+ *
+ * Direct inspiration from Reference Image 4:
+ *   • Minimal, clean SaaS workspace
+ *   • Hidden sidebar on initial screen; revealed after successful analysis
+ *   • Overlapping document stack visual
+ *   • Integrated chat composer with attachment control & circular send button
+ *   • Ethereal loading orb animation during analysis
+ */
+
+/* ── Google Fonts ────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500;1,6..72,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+/* ── Design Tokens ───────────────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --color-primary:        #4f46e5;
+  --color-primary-hover:  #4338ca;
+  --color-accent:         #4338ca;
+
+  /* Surfaces */
+  --color-bg:             #faf9f6;
+  --color-surface:        #ffffff;
+  --color-surface-subtle: #f4f2ee;
+  --color-border:         #e7e5e0;
+  --color-border-hover:   #d3cfc8;
+
+  /* Typography */
+  --color-text-main:      #0f172a;
+  --color-text-body:      #334155;
+  --color-text-muted:     #64748b;
+  --color-text-dim:       #94a3b8;
+
+  /* Dark Sidebar */
+  --color-sidebar-bg:     #0b0f19;
+  --color-sidebar-border: #1e293b;
+  --color-sidebar-text:   #94a3b8;
+  --color-sidebar-hover:  rgba(255, 255, 255, 0.06);
+
+  /* Fonts */
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Plus Jakarta Sans', var(--font-sans);
+  --font-serif:   'Instrument Serif', 'Newsreader', Georgia, serif;
+
+  /* Radii */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   22px;
+  --radius-2xl:  30px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-subtle: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-card:   0 1px 3px rgba(15, 23, 42, 0.05), 0 10px 25px -5px rgba(15, 23, 42, 0.04);
+  --shadow-float:  0 10px 30px -4px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+}
+
+/* ── Global Reset ────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text-body);
+  line-height: 1.5;
+}
+
+/* ── Streamlit Shell Overrides ───────────────────────────────────────── */
+#MainMenu, footer, header { visibility: hidden; }
+.stApp { background: var(--color-bg) !important; }
+.stApp > header { display: none !important; }
+
+/* Main content container: tight padding for desktop viewport fit */
+.main .block-container {
+  padding-top: 0.35rem !important;
+  padding-bottom: 0.5rem !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+  max-width: 1240px !important;
+}
+
+[data-testid="stVerticalBlock"] {
+  gap: 0.4rem !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   HIDE SIDEBAR ON INITIAL SCREEN
+   ══════════════════════════════════════════════════════════════════════ */
+.stApp:has(.mezy-initial-screen) [data-testid="stSidebar"],
+.stApp:has(.mezy-initial-screen) [data-testid="collapsedControl"] {
+  display: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ANALYSIS SCREEN VIEWPORT FIT & CLEAN SCROLLING (ISSUE 1)
+   ══════════════════════════════════════════════════════════════════════ */
+html, body {
+  height: 100%;
+}
+
+.stAppViewContainer {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scroll-behavior: smooth;
+}
+
+.stApp:has(.mezy-analyzing-screen) .main .block-container {
+  padding-top: 0.15rem !important;
+  padding-bottom: 0.25rem !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) [data-testid="stVerticalBlock"] {
+  gap: 0.25rem !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) .mezy-minimal-hero {
+  padding: 0.6rem 0.5rem 0.4rem !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) .mezy-headline {
+  font-size: clamp(2rem, 2.8vw, 2.5rem) !important;
+  margin: 0 0 0.35rem !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) .mezy-description {
+  font-size: 0.9rem !important;
+  line-height: 1.45 !important;
+  margin-bottom: 0.6rem !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) .composer-docs-anchor {
+  display: none !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) .mezy-orb-wrapper {
+  padding: 1rem 0 0.85rem !important;
+  gap: 0.75rem !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) .mezy-orb {
+  width: 76px !important;
+  height: 76px !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) .orb-status {
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  color: #64748b !important;
+  margin: 0.25rem 0 0.65rem 0 !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) [data-testid="stVerticalBlockBorderWrapper"] {
+  padding: 1rem 1.35rem 1.15rem 1.35rem !important;
+  min-height: 125px !important;
+}
+
+.stApp:has(.mezy-analyzing-screen) .composer-subtext {
+  margin-top: 0.75rem !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TOP BAR: OFFICIAL MEZY LOGO AT TOP-LEFT
+   ══════════════════════════════════════════════════════════════════════ */
+.top-brand-bar {
+  display: flex;
+  align-items: center;
+  padding: 0.15rem 0.25rem 0.35rem;
+}
+
+.home-brand-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.05));
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   HERO SECTION (MINIMAL AI WORKSPACE)
+   ══════════════════════════════════════════════════════════════════════ */
+.mezy-minimal-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0.5rem 0.4rem;
+}
+
+.mezy-headline {
+  font-family: var(--font-serif) !important;
+  font-size: clamp(2.1rem, 3.1vw, 2.75rem) !important;
+  font-weight: 400 !important;
+  color: #475569 !important; /* Slightly softer colour for main tagline */
+  line-height: 1.12 !important;
+  letter-spacing: -0.015em !important;
+  margin: 0 0 0.35rem !important;
+  max-width: 600px !important;
+}
+
+.mezy-serif-word {
+  font-family: var(--font-serif) !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  color: #4338ca !important; /* Restrained accent colour highlight */
+  letter-spacing: -0.01em !important;
+}
+
+.mezy-description {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  max-width: 480px;
+  line-height: 1.45;
+  margin: 0 auto;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LEFT AND RIGHT DECORATIVE ILLUSTRATIONS
+   Framing the central content
+   ══════════════════════════════════════════════════════════════════════ */
+.side-illustration {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 0.5rem;
+}
+
+.side-illustration-left {
+  justify-content: flex-end;
+}
+
+.side-illustration-right {
+  justify-content: flex-start;
+}
+
+.side-deco-img {
+  max-width: 215px;
+  max-height: 205px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.85;
+  mix-blend-mode: multiply;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.side-deco-img:hover {
+  opacity: 0.98;
+  transform: scale(1.02);
+}
+
+@media (max-width: 1060px) {
+  .side-illustration {
+    display: none !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   DOCUMENT UPLOAD VISUAL
+   Overlapping document outlines peeking above the composer
+   ══════════════════════════════════════════════════════════════════════ */
+.composer-docs-anchor {
+  position: relative;
+  height: 44px;
+  margin-bottom: -6px;
+  z-index: 3;
+  padding-left: 32px;
+}
+
+.doc-stack {
+  position: relative;
+  width: 84px;
+  height: 44px;
+}
+
+.doc-sheet {
+  width: 38px;
+  height: 44px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.05);
+  padding: 5px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  position: absolute;
+  bottom: 8px;
+  transition: transform 200ms ease;
+}
+
+.doc-sheet-1 {
+  left: 0;
+  transform: rotate(-8deg) translateY(-4px);
+  background: #f8fafc;
+  z-index: 1;
+}
+
+.doc-sheet-2 {
+  left: 18px;
+  transform: rotate(-1deg) translateY(-7px);
+  z-index: 3;
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.doc-sheet-3 {
+  left: 36px;
+  transform: rotate(8deg) translateY(-3px);
+  background: #f1f5f9;
+  z-index: 2;
+}
+
+.doc-sheet:hover {
+  transform: translateY(-9px) scale(1.05);
+}
+
+.doc-line {
+  height: 2.5px;
+  background: #e2e8f0;
+  border-radius: 2px;
+}
+.doc-line-title { width: 65%; background: #94a3b8; height: 3px; }
+.doc-line-lg    { width: 90%; }
+.doc-line-md    { width: 75%; }
+.doc-line-sm    { width: 50%; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   INTEGRATED CHAT COMPOSER (REFERENCE IMAGE 4)
+   ══════════════════════════════════════════════════════════════════════ */
+/* The outer container wrapping the prompt, attachment, and send button */
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stFileUploader"]),
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stTextInput"]) {
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: 0 12px 36px -6px rgba(15, 23, 42, 0.06), 0 2px 8px -1px rgba(15, 23, 42, 0.02) !important;
+  padding: 1rem 1.35rem 1.15rem !important;
+  position: relative !important;
+  z-index: 2 !important;
+  min-height: 125px !important;
+  transition: box-shadow 220ms ease, border-color 220ms ease !important;
+}
+
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stFileUploader"]):focus-within,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stTextInput"]):focus-within {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 18px 48px -8px rgba(15, 23, 42, 0.1), 0 4px 12px -2px rgba(15, 23, 42, 0.03) !important;
+}
+
+/* Remove "Press Enter to apply" instructions from chat input and text inputs */
+[data-testid="InputInstructions"],
+[data-testid="stInputInstructions"],
+.stTextInput [data-testid="InputInstructions"],
+.stTextInput [data-testid="stInputInstructions"],
+.stTextInput div:has(> kbd),
+.stTextInput kbd,
+div:has(> [data-testid="InputInstructions"]),
+.stTextInput small {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+}
+
+/* File pill chip inside composer (matching '3 files' pill in reference) */
+.composer-file-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.file-pill-name {
+  font-family: var(--font-sans);
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Prompt input field inside composer */
+.stTextInput > div > div > input {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  border-radius: 0 !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.95rem !important;
+  color: var(--color-text-main) !important;
+  padding: 0.35rem 0.25rem 0.55rem !important;
+  transition: border-color 150ms ease !important;
+  box-shadow: none !important;
+}
+
+.stTextInput > div > div > input:focus {
+  border-bottom-color: var(--color-primary) !important;
+  box-shadow: none !important;
+}
+
+.stTextInput > div > div > input::placeholder {
+  color: #94a3b8 !important;
+  font-size: 0.925rem !important;
+}
+
+/* Streamlit File Uploader styled as a clean attachment trigger */
+[data-testid="stFileUploader"] {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+[data-testid="stFileUploaderDropzone"] {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  min-height: unset !important;
+}
+
+[data-testid="stFileUploaderDropzoneInstructions"] {
+  display: none !important;
+}
+
+[data-testid="stFileUploaderDropzone"] [data-testid="stBaseButton-secondary"] {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 9999px !important;
+  color: #475569 !important;
+  font-size: 0.78rem !important;
+  font-weight: 500 !important;
+  padding: 0.35rem 0.9rem !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+  transition: all 140ms ease !important;
+}
+
+[data-testid="stFileUploaderDropzone"] [data-testid="stBaseButton-secondary"]:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Uploaded file preview badge inside Streamlit */
+[data-testid="stFileUploaderFile"] {
+  background: #ffffff !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 0.35rem 0.65rem !important;
+  font-size: 0.8rem !important;
+}
+
+/* Circular Send / Stop Button with White Icon (Reference Image 4 / ChatGPT-style) */
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stFileUploader"]) button[data-testid="stBaseButton-primary"],
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stTextInput"]) button[data-testid="stBaseButton-primary"],
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stFileUploader"]) button[kind="primary"],
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stTextInput"]) button[kind="primary"],
+div[data-testid="stColumn"] button[data-testid="stBaseButton-primary"],
+div[data-testid="stColumn"] button[kind="primary"] {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid #0f172a !important;
+  border-radius: 50% !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22) !important;
+  transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+  margin-left: auto !important;
+}
+
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stFileUploader"]) button[data-testid="stBaseButton-primary"]:hover,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stTextInput"]) button[data-testid="stBaseButton-primary"]:hover,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stFileUploader"]) button[kind="primary"]:hover,
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="stTextInput"]) button[kind="primary"]:hover,
+div[data-testid="stColumn"] button[data-testid="stBaseButton-primary"]:hover,
+div[data-testid="stColumn"] button[kind="primary"]:hover {
+  background: #000000 !important;
+  border-color: #000000 !important;
+  transform: scale(1.08) !important;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.35) !important;
+}
+
+[data-testid="stVerticalBlockBorderWrapper"] button[data-testid="stBaseButton-primary"] p,
+[data-testid="stVerticalBlockBorderWrapper"] button[data-testid="stBaseButton-primary"] div,
+[data-testid="stVerticalBlockBorderWrapper"] button[data-testid="stBaseButton-primary"] span,
+div[data-testid="stColumn"] button[data-testid="stBaseButton-primary"] p,
+div[data-testid="stColumn"] button[data-testid="stBaseButton-primary"] div,
+div[data-testid="stColumn"] button[data-testid="stBaseButton-primary"] span {
+  font-size: 1.15rem !important;
+  line-height: 1 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-align: center !important;
+  justify-content: center !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Subtle Subtext Beneath Composer (Reference Image 4) */
+.composer-subtext {
+  font-size: 0.775rem;
+  color: #94a3b8;
+  text-align: center;
+  margin-top: 0.65rem;
+  letter-spacing: 0.02em;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   DARK SIDEBAR (REVEALED AFTER SUCCESSFUL ANALYSIS)
+   ══════════════════════════════════════════════════════════════════════ */
+[data-testid="stSidebar"] {
+  background: var(--color-sidebar-bg) !important;
+  border-right: 1px solid var(--color-sidebar-border) !important;
+  min-width: 250px !important;
+  max-width: 250px !important;
+}
+
+[data-testid="stSidebar"] > div:first-child {
+  padding: 1.25rem 1rem !important;
+}
+
+.sidebar-brand-container {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.35rem 0.5rem 0.6rem;
+}
+
+.sidebar-logo-badge {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.sidebar-brand-logo {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.sidebar-brand-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sidebar-brand-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #f8fafc;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.sidebar-brand-subtitle {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 3px;
+  line-height: 1.1;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--color-sidebar-border);
+  margin: 0.85rem 0.25rem;
+}
+
+.sidebar-section-header {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 0 0.5rem 0.35rem;
+}
+
+[data-testid="stSidebar"] .stButton > button {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  padding: 0.58rem 0.85rem !important;
+  font-size: 0.825rem !important;
+  font-weight: 500 !important;
+  font-family: var(--font-sans) !important;
+  border-radius: 10px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #94a3b8 !important;
+  transition: all 140ms ease !important;
+  box-shadow: none !important;
+  margin-bottom: 2px !important;
+}
+
+[data-testid="stSidebar"] .stButton > button div,
+[data-testid="stSidebar"] .stButton > button p {
+  text-align: left !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  color: inherit !important;
+}
+
+[data-testid="stSidebar"] .stButton > button:hover {
+  background: var(--color-sidebar-hover) !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+[data-testid="stSidebar"] .stButton > button[kind="primary"] {
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.24) 0%, rgba(99, 102, 241, 0.08) 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(99, 102, 241, 0.45) !important;
+  border-left: 3.5px solid #6366f1 !important;
+  font-weight: 600 !important;
+}
+
+.sidebar-dataset-card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.85rem;
+  margin: 0.25rem 0.25rem 0.5rem;
+}
+
+.dataset-status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dataset-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+.dataset-count-text {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+}
+
+.sidebar-footer-container {
+  margin-top: 2rem;
+  padding: 0 0.5rem;
+  text-align: center;
+}
+
+.sidebar-footer-badge {
+  font-size: 0.65rem;
+  color: #334155;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ANIMATED LOADING ORB (REFERENCE 5)
+   ══════════════════════════════════════════════════════════════════════ */
+.mezy-orb-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+}
+
+.mezy-orb {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  position: relative;
+  animation: orb-float 3s ease-in-out infinite;
+}
+
+.mezy-orb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%,
+    #67e8f9 0%, #818cf8 35%, #c084fc 65%, #f472b6 100%);
+  filter: blur(12px);
+  animation: orb-pulse 2.4s ease-in-out infinite alternate;
+}
+
+.mezy-orb::after {
+  content: '';
+  position: absolute;
+  inset: 15%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 60% 40%, #a5f3fc, #4f46e5 60%);
+  filter: blur(8px);
+  opacity: 0.85;
+  animation: orb-spin 4s linear infinite;
+}
+
+@keyframes orb-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes orb-pulse {
+  0%   { filter: blur(10px); opacity: .85; }
+  100% { filter: blur(15px); opacity: 1;  }
+}
+
+@keyframes orb-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.orb-status {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  animation: status-fade 1.8s ease-in-out infinite;
+}
+
+@keyframes status-fade {
+  0%, 100% { opacity: .6; }
+  50%       { opacity: 1;  }
+}
+
+/* ── Dashboard Chart Interaction & Normal Cursor ────────────────────────── */
+/* Ensure mouse cursor behaves normally across all dashboard charts,
+   matching the Sentiment Distribution chart and eliminating the plus-shaped zoom cursor. */
+.js-plotly-plot .plotly .draglayer,
+.js-plotly-plot .plotly .drag,
+.js-plotly-plot .plotly .nsewdrag,
+.js-plotly-plot .plotly .cursor-crosshair,
+.js-plotly-plot .plotly .cursor-ns,
+.js-plotly-plot .plotly .cursor-ew {
+  cursor: default !important;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .main .block-container { padding: 1rem !important; }
+  .mezy-minimal-hero { padding: 2rem 0.5rem 1rem; }
+  .mezy-headline { font-size: 2rem; }
+}

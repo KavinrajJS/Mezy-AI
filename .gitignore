@@ -1,0 +1,43 @@
+# Environment variables — never commit this file
+.env
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.pytest_cache/
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated reports and exports
+reports/
+exports/
+*.pdf
+*.docx
+
+# Uploaded data
+data/uploads/
+data/*.csv
+!data/sample_reviews.csv
+!data/README.md
+
+# IDE and OS
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Logs
+*.log
